@@ -214,35 +214,46 @@ class _AddProductState extends State<AddProduct> {
               child: Center(
                 child: ElevatedButton(
                   onPressed: () async {
-                    var uuid = Uuid().v4();
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    String photoURL = await StorageMethods()
-                        .uploadImageToStorage('ProductPics', _image!, true);
-                    await FirebaseFirestore.instance
-                        .collection("products")
-                        .doc(uuid)
-                        .set({
-                      "productName": _controller.text,
-                      "productPrice": _price.text,
-                      "productCategory": _productCategory.text,
-                      "productSubCategory": _productSubCategory.text,
-                      "productImage": photoURL,
-                      "productImages": [],
-                      "rating": 5.0,
-                      "uuid": uuid,
-                    });
+                    if (_image == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Product Image is Required")));
+                    } else if (_controller.text.isEmpty ||
+                        _controllerDescrition.text.isEmpty ||
+                        _price.text.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("All Fields are Required")));
+                    } else {
+                      var uuid = Uuid().v4();
+                      setState(() {
+                        _isLoading = true;
+                      });
+                      String photoURL = await StorageMethods()
+                          .uploadImageToStorage('ProductPics', _image!, true);
+                      await FirebaseFirestore.instance
+                          .collection("products")
+                          .doc(uuid)
+                          .set({
+                        "productDescription": _controllerDescrition.text,
+                        "productName": _controller.text,
+                        "productPrice": _price.text,
+                        "productCategory": _productCategory.text,
+                        "productSubCategory": _productSubCategory.text,
+                        "productImage": photoURL,
+                        "productImages": [],
+                        "rating": 5.0,
+                        "uuid": uuid,
+                      });
 
-                    setState(() {
-                      _isLoading = false;
-                    });
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (builder) => ImagesScreens(
-                                  uuid: uuid,
-                                )));
+                      setState(() {
+                        _isLoading = false;
+                      });
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (builder) => ImagesScreens(
+                                    uuid: uuid,
+                                  )));
+                    }
                   },
                   child: _isLoading == true
                       ? const Center(

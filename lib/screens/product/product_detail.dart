@@ -10,10 +10,16 @@ class ProductDetail extends StatefulWidget {
   final ProductPrice;
   final productImages;
   final productUuod;
+  final productCategory;
+  final productSubCategory;
+  final productRating;
   ProductDetail(
       {super.key,
       required this.productUuod,
       required this.productImages,
+      required this.productCategory,
+      required this.productRating,
+      required this.productSubCategory,
       required this.ProductDescritption,
       required this.ProductImage,
       required this.ProductName,
@@ -45,141 +51,204 @@ class _ProductDetailState extends State<ProductDetail> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              decoration: BoxDecoration(
-                  color: Color(0xffFFBF00), shape: BoxShape.circle),
+              decoration:
+                  BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
               child: Icon(
                 Icons.arrow_back,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
         ),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            child: Image.network(
-              widget.ProductImage,
-              fit: BoxFit.fitWidth,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              child: Image.network(
+                widget.ProductImage,
+                fit: BoxFit.fitWidth,
+              ),
+              height: 200,
+              width: MediaQuery.of(context).size.width,
             ),
-            height: 200,
-            width: MediaQuery.of(context).size.width,
-          ),
-          Container(
-              margin: EdgeInsets.only(left: 15, right: 15, top: 15),
-              child: Text(
-                "Product Name",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold),
-              )),
-          Container(
-            margin: EdgeInsets.only(left: 15, right: 15),
-            child: Text(widget.ProductName),
-          ),
-          Container(
-              margin: EdgeInsets.only(left: 15, right: 15, top: 15),
-              child: Text(
-                "Product Description",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold),
-              )),
-          Container(
-            margin: EdgeInsets.only(left: 15, right: 15),
-            child: Text(widget.ProductDescritption),
-          ),
-          Container(
-              margin: EdgeInsets.only(left: 15, right: 15, top: 15),
-              child: Text(
-                "Product Price",
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold),
-              )),
-          Container(
-            margin: EdgeInsets.only(left: 15, right: 15),
-            child: Text(widget.ProductPrice.toString()),
-          ),
-          // Container(
-          //     margin: EdgeInsets.only(left: 15, right: 15, top: 15),
-          //     child: Text(
-          //       "Product Images",
-          //       style: TextStyle(
-          //           color: Colors.black,
-          //           fontSize: 22,
-          //           fontWeight: FontWeight.bold),
-          //     )),
-          // Container(
-          //   height: 160,
-          //   margin: EdgeInsets.only(left: 15, right: 15, top: 15),
-          //   child: GridView.builder(
-          //       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          //           crossAxisCount: 3),
-          //       itemBuilder: (BuildContext context, int index) {
-          //         return Padding(
-          //           padding: const EdgeInsets.all(8.0),
-          //           child: CircleAvatar(
-          //             radius: 50,
-          //             backgroundImage:
-          //                 NetworkImage(widget.productImages.toString()),
-          //           ),
-          //         );
-          //       }),
-          // ),
-          Center(
-            child: TextButton(
-                onPressed: () {
-                  showDialog<String>(
-                      context: context,
-                      builder: (BuildContext context) => AlertDialog(
-                              title: const Text('Delete Alert'),
-                              content: const Text(
-                                  'Are You Sure To Delete This Product'),
-                              actions: <Widget>[
-                                TextButton(
-                                  onPressed: () =>
-                                      Navigator.pop(context, 'Cancel'),
-                                  child: const Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () async {
-                                    await FirebaseFirestore.instance
-                                        .collection("products")
-                                        .doc(widget.productUuod)
-                                        .delete()
-                                        .then((value) => {
-                                              ScaffoldMessenger.of(context)
-                                                  .showSnackBar(
-                                                SnackBar(
-                                                  content: Text(
-                                                      "Product Delete Successfully"),
-                                                ),
-                                              ),
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (builder) =>
-                                                          MainDashboard()))
-                                            });
-                                  },
-                                  child: const Text('OK'),
-                                ),
-                              ]));
-                },
+            Divider(
+              color: Colors.blue.withOpacity(.4),
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, right: 15, top: 15),
                 child: Text(
-                  "Delete Product",
-                  style: TextStyle(color: Color(0xffFFBF00)),
+                  "Product Name",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
                 )),
-          )
-        ],
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15),
+              child: Text(widget.ProductName),
+            ),
+            Divider(
+              color: Colors.blue.withOpacity(.4),
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+                child: Text(
+                  "Product Category",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                )),
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15),
+              child: Text(widget.productCategory),
+            ),
+            Divider(
+              color: Colors.blue.withOpacity(.4),
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+                child: Text(
+                  "Product Sub Category",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                )),
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15),
+              child: Text(widget.productSubCategory),
+            ),
+            Divider(
+              color: Colors.blue.withOpacity(.4),
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+                child: Text(
+                  "Product Description",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                )),
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15),
+              child: Text(widget.ProductDescritption),
+            ),
+            Divider(
+              color: Colors.blue.withOpacity(.4),
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+                child: Text(
+                  "Product Price",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                )),
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15),
+              child: Text(widget.ProductPrice.toString()),
+            ),
+            Divider(
+              color: Colors.blue.withOpacity(.4),
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+                child: Text(
+                  "Product Images",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                )),
+            Container(
+              height: 160,
+              margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+              child: GridView.builder(
+                  itemCount: widget.productImages.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        radius: 50,
+                        backgroundImage:
+                            NetworkImage(widget.productImages.toString()),
+                      ),
+                    );
+                  }),
+            ),
+            Divider(
+              color: Colors.blue.withOpacity(.4),
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, right: 15, top: 15),
+                child: Text(
+                  "Rating",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold),
+                )),
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15),
+              child: Text(widget.productRating.toString()),
+            ),
+            Divider(
+              color: Colors.blue.withOpacity(.4),
+            ),
+            Center(
+              child: TextButton(
+                  onPressed: () {
+                    showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                                title: const Text('Delete Alert'),
+                                content: const Text(
+                                    'Are You Sure To Delete This Product'),
+                                actions: <Widget>[
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(context, 'Cancel'),
+                                    child: const Text('Cancel'),
+                                  ),
+                                  TextButton(
+                                    onPressed: () async {
+                                      await FirebaseFirestore.instance
+                                          .collection("products")
+                                          .doc(widget.productUuod)
+                                          .delete()
+                                          .then((value) => {
+                                                ScaffoldMessenger.of(context)
+                                                    .showSnackBar(
+                                                  SnackBar(
+                                                    content: Text(
+                                                        "Product Delete Successfully"),
+                                                  ),
+                                                ),
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (builder) =>
+                                                            MainDashboard()))
+                                              });
+                                    },
+                                    child: const Text('OK'),
+                                  ),
+                                ]));
+                  },
+                  child: Text(
+                    "Delete Product",
+                    style: TextStyle(color: Colors.blue),
+                  )),
+            )
+          ],
+        ),
       ),
     );
   }

@@ -48,18 +48,6 @@ class _Home_ScreenState extends State<Home_Screen> {
                         fontWeight: FontWeight.w800),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 10),
-                    child: Padding(
-                      padding: const EdgeInsets.all(14.0),
-                      child: CupertinoSearchTextField(
-                        controller: _controller,
-                        onChanged: (value) {},
-                        onSubmitted: (value) {},
-                        autocorrect: true,
-                      ),
-                    ),
-                  ),
-                  Container(
                     height: 450,
                     child: StreamBuilder<Object>(
                         stream: FirebaseFirestore.instance
@@ -103,18 +91,24 @@ class _Home_ScreenState extends State<Home_Screen> {
                                             MaterialPageRoute(
                                                 builder: (builder) =>
                                                     ProductDetail(
-                                                      productImages:
-                                                          data['productImages'],
-                                                      productUuod:
-                                                          data['productUUid'],
-                                                      ProductDescritption: data[
-                                                          'productDescription'],
-                                                      ProductImage:
-                                                          data['image'],
+                                                      ProductPrice:
+                                                          data['productPrice'],
                                                       ProductName:
                                                           data['productName'],
-                                                      ProductPrice:
-                                                          data['prductPrice'],
+                                                      productImages:
+                                                          data['productImages'],
+                                                      productRating:
+                                                          data['rating']
+                                                              .toString(),
+                                                      productCategory: data[
+                                                          'productCategory'],
+                                                      ProductImage:
+                                                          data['productImage'],
+                                                      productUuod: data['uuid'],
+                                                      productSubCategory: data[
+                                                          'productSubCategory'],
+                                                      ProductDescritption: data[
+                                                          'productDescription'],
                                                     )));
                                       },
                                       child: Column(
