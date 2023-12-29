@@ -17,13 +17,19 @@ class _Home_ScreenState extends State<Home_Screen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(onPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (builder) => AddProduct(
-                    storeid: FirebaseAuth.instance.currentUser!.uid)));
-      }),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.blueAccent,
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (builder) => AddProduct(
+                        storeid: FirebaseAuth.instance.currentUser!.uid)));
+          }),
       backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
@@ -34,41 +40,8 @@ class _Home_ScreenState extends State<Home_Screen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: 40,
-                    child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                      stream: FirebaseFirestore.instance
-                          .collection("storeowners")
-                          .snapshots(),
-                      builder: (_, snapshot) {
-                        if (snapshot.hasError)
-                          return Text('Error = ${snapshot.error}');
-                        if (snapshot.hasData) {
-                          final docs = snapshot.data!.docs;
-                          return ListView.builder(
-                            itemCount: docs.length,
-                            itemBuilder: (_, i) {
-                              final data = docs[i].data();
-                              return Container(
-                                margin: EdgeInsets.only(left: 15),
-                                child: Text(
-                                  data['name'],
-                                  style: TextStyle(
-                                      color: Color(0xff1D1E20),
-                                      fontSize: 29,
-                                      fontWeight: FontWeight.w800),
-                                ),
-                              );
-                            },
-                          );
-                        }
-
-                        return Center(child: CircularProgressIndicator());
-                      },
-                    ),
-                  ),
                   Text(
-                    "  Welcome to Osar Store.",
+                    "Welcome to Three Star Trading",
                     style: TextStyle(
                         color: Color(0xff8F959E),
                         fontSize: 15,
@@ -85,55 +58,6 @@ class _Home_ScreenState extends State<Home_Screen> {
                         autocorrect: true,
                       ),
                     ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 40,
-                    child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                        stream: FirebaseFirestore.instance
-                            .collection("storeowners")
-                            .snapshots(),
-                        builder: (_, snapshot) {
-                          if (snapshot.hasError)
-                            return Text('Error = ${snapshot.error}');
-                          if (snapshot.hasData) {
-                            final docs = snapshot.data!.docs;
-                            return ListView.builder(
-                              itemCount: docs.length,
-                              itemBuilder: (_, i) {
-                                final data = docs[i].data();
-                                return Container(
-                                    margin:
-                                        EdgeInsets.only(left: 12, right: 12),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text("Product"),
-                                        TextButton(
-                                            onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (builder) =>
-                                                          AddProduct(
-                                                            storeid:
-                                                                data['uid'],
-                                                          )));
-                                            },
-                                            child: Text(
-                                              "Add Product",
-                                              style: TextStyle(
-                                                  color: Color(0xffFFBF00)),
-                                            )),
-                                      ],
-                                    ));
-                              },
-                            );
-                          }
-
-                          return Center(child: CircularProgressIndicator());
-                        }),
                   ),
                   Container(
                     height: 450,
@@ -199,7 +123,7 @@ class _Home_ScreenState extends State<Home_Screen> {
                                             borderRadius:
                                                 BorderRadius.circular(8.0),
                                             child: Image.network(
-                                              data["image"],
+                                              data["productImage"],
                                               height: 78,
                                               width: 100,
                                               fit: BoxFit.cover,

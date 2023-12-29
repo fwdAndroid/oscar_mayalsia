@@ -16,18 +16,16 @@ class _SplashState extends State<Splash> {
   @override
   void initState() {
     super.initState();
-    FirebaseAuth.instance.userChanges().listen((User? user) {
-      Timer(
-          Duration(seconds: 3),
-          () => Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => MainAuth())));
-    });
+    Timer(
+        Duration(seconds: 3),
+        () => Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => MainAuth())));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Color(0xffFFBF00),
+        backgroundColor: Colors.white,
         body: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,

@@ -52,7 +52,7 @@ class _MainDashboardState extends State<MainDashboard> {
               ),
               icon: Icon(
                 Icons.home,
-                color: Color(0xffFFBF00),
+                color: Colors.blue,
               )),
           BottomNavyBarItem(
               title: Text(
@@ -61,7 +61,7 @@ class _MainDashboardState extends State<MainDashboard> {
               ),
               icon: Icon(
                 Icons.apps,
-                color: Color(0xffFFBF00),
+                color: Colors.blue,
               )),
           BottomNavyBarItem(
               title: Text(
@@ -70,7 +70,7 @@ class _MainDashboardState extends State<MainDashboard> {
               ),
               icon: Icon(
                 Icons.message_sharp,
-                color: Color(0xffFFBF00),
+                color: Colors.blue,
               )),
           BottomNavyBarItem(
               title: Text(
@@ -79,7 +79,7 @@ class _MainDashboardState extends State<MainDashboard> {
               ),
               icon: Icon(
                 Icons.person,
-                color: Color(0xffFFBF00),
+                color: Colors.blue,
               )),
         ],
       ),

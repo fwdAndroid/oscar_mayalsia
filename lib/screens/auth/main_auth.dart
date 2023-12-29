@@ -1,7 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_social_button/flutter_social_button.dart';
-import 'package:oscar_mayalsia/database/database_methods.dart';
-import 'package:oscar_mayalsia/screens/status/checkstatus.dart';
+import 'package:oscar_mayalsia/screens/mainscreen/dashboard/main_dashborad.dart';
+import 'package:oscar_mayalsia/widgets/textfieldwidget.dart';
 
 class MainAuth extends StatefulWidget {
   const MainAuth({Key? key}) : super(key: key);
@@ -22,6 +22,9 @@ class _MainAuthState extends State<MainAuth> {
 
   @override
   Widget build(BuildContext context) {
+    TextEditingController _emailController = TextEditingController();
+    TextEditingController _passController = TextEditingController();
+    bool _isLoading = false;
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -31,24 +34,49 @@ class _MainAuthState extends State<MainAuth> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(
-                "assets/logo.png",
-                width: 150,
-                height: 200,
+              Center(
+                child: Image.asset(
+                  "assets/logo.png",
+                  width: 150,
+                  height: 150,
+                ),
               ),
-              FlutterSocialButton(
-                onTap: () async {
-                  await DatabaseMethods().signInWithGoogle().then((value) => {
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormInputField(
+                  controller: _emailController,
+                  hintText: "Enter Email",
+                  textInputType: TextInputType.emailAddress,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormInputField(
+                  controller: _passController,
+                  hintText: "Enter Password",
+                  textInputType: TextInputType.emailAddress,
+                ),
+              ),
+              SizedBox(height: 24),
+              _isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          _isLoading = true;
+                        });
+                        await FirebaseAuth.instance.signInWithEmailAndPassword(
+                            email: _emailController.text,
+                            password: _passController.text);
+                        setState(() {
+                          _isLoading = false;
+                        });
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (builder) => CheckStatus()))
-                      });
-                },
-                buttonType:
-                    ButtonType.google, // Button type for different type buttons
-                iconColor: Colors.black, // for change icons colors
-              ),
+                                builder: (builder) => MainDashboard()));
+                      },
+                      child: Text("Login"))
             ],
           ),
         ),

@@ -1,19 +1,14 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'dart:typed_data';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:oscar_mayalsia/database/database_methods.dart';
-import 'package:oscar_mayalsia/screens/mainscreen/dashboard/main_dashborad.dart';
+import 'package:oscar_mayalsia/database/storage_methods.dart';
+import 'package:oscar_mayalsia/screens/product/images_screens.dart';
 import 'package:oscar_mayalsia/widgets/textfieldwidget.dart';
 import 'package:oscar_mayalsia/widgets/utils.dart';
 import 'package:uuid/uuid.dart';
-import 'package:path/path.dart' as Path;
 
 class AddProduct extends StatefulWidget {
   String storeid;
@@ -30,18 +25,14 @@ class _AddProductState extends State<AddProduct> {
   TextEditingController _controller = TextEditingController();
   TextEditingController _controllerDescrition = TextEditingController();
   TextEditingController _price = TextEditingController();
+  TextEditingController _productCategory = TextEditingController();
+  TextEditingController _productSubCategory = TextEditingController();
   Uint8List? _image;
-  List<File> _images = [];
-  double val = 0;
-  CollectionReference? imgRef;
-  firebase_storage.Reference? ref;
 
   bool _isLoading = false;
-  final picker = ImagePicker();
+
   @override
   Widget build(BuildContext context) {
-    final inputBorder =
-        OutlineInputBorder(borderSide: Divider.createBorderSide(context));
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -61,11 +52,11 @@ class _AddProductState extends State<AddProduct> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              decoration: BoxDecoration(
-                  color: Color(0xffFFBF00), shape: BoxShape.circle),
+              decoration:
+                  BoxDecoration(color: Colors.blue, shape: BoxShape.circle),
               child: Icon(
                 Icons.arrow_back,
-                color: Colors.black,
+                color: Colors.white,
               ),
             ),
           ),
@@ -137,13 +128,13 @@ class _AddProductState extends State<AddProduct> {
             Container(
                 margin: EdgeInsets.only(left: 15, right: 15),
                 child: Text(
-                  "Item Name",
+                  "Product Name",
                   style: TextStyle(color: Colors.black, fontSize: 17),
                 )),
             Container(
               margin: EdgeInsets.only(left: 15, right: 15),
               child: TextFormInputField(
-                hintText: 'Item Name',
+                hintText: 'Product Name',
                 textInputType: TextInputType.text,
                 controller: _controller,
               ),
@@ -154,25 +145,15 @@ class _AddProductState extends State<AddProduct> {
             Container(
                 margin: EdgeInsets.only(left: 15, right: 15),
                 child: Text(
-                  "Item Description",
+                  "Product Description",
                   style: TextStyle(color: Colors.black, fontSize: 17),
                 )),
             Container(
                 margin: EdgeInsets.only(left: 15, right: 15),
-                child: TextField(
+                child: TextFormInputField(
                   controller: _controllerDescrition,
-                  decoration: InputDecoration(
-                    hintText: 'Description',
-                    fillColor: Colors.white,
-                    border: inputBorder,
-                    focusedBorder: inputBorder,
-                    enabledBorder: inputBorder,
-                    filled: true,
-                    contentPadding: EdgeInsets.all(8),
-                  ),
-                  keyboardType: TextInputType.multiline,
-                  minLines: 1, // <-- SEE HERE
-                  maxLines: 10, // <-- SEE HERE
+                  hintText: "Description",
+                  textInputType: TextInputType.text,
                 )),
             SizedBox(
               height: 15,
@@ -197,34 +178,32 @@ class _AddProductState extends State<AddProduct> {
             Container(
                 margin: EdgeInsets.only(left: 15, right: 15),
                 child: Text(
-                  "Product Images",
+                  "Product Category",
                   style: TextStyle(color: Colors.black, fontSize: 17),
                 )),
             Container(
               margin: EdgeInsets.only(left: 15, right: 15),
-              child: Container(
-                height: 200,
-                padding: EdgeInsets.all(4),
-                child: GridView.builder(
-                    itemCount: _images.length + 1,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3),
-                    itemBuilder: (context, index) {
-                      return index == 0
-                          ? Center(
-                              child: IconButton(
-                                  icon: Icon(Icons.add),
-                                  onPressed: () => choosesImage()),
-                            )
-                          : Container(
-                              margin: EdgeInsets.all(3),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  image: DecorationImage(
-                                      image: FileImage(_images[index - 1]),
-                                      fit: BoxFit.cover)),
-                            );
-                    }),
+              child: TextFormInputField(
+                hintText: 'Product Category',
+                textInputType: TextInputType.text,
+                controller: _productCategory,
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            Container(
+                margin: EdgeInsets.only(left: 15, right: 15),
+                child: Text(
+                  "Product SubCategory",
+                  style: TextStyle(color: Colors.black, fontSize: 17),
+                )),
+            Container(
+              margin: EdgeInsets.only(left: 15, right: 15),
+              child: TextFormInputField(
+                hintText: 'Product SubCategory',
+                textInputType: TextInputType.text,
+                controller: _productSubCategory,
               ),
             ),
             SizedBox(
@@ -239,38 +218,42 @@ class _AddProductState extends State<AddProduct> {
                     setState(() {
                       _isLoading = true;
                     });
-                    String rse = await DatabaseMethods().addProduct(
-                      productUUid: uuid,
-                      storeid: widget.storeid,
-                      productImages: [_images.toString()],
-                      file: _image!,
-                      productDescription: _controllerDescrition.text,
-                      productName: _controller.text,
-                      price: int.parse(_price.text),
-                      uid: FirebaseAuth.instance.currentUser!.uid,
-                    );
+                    String photoURL = await StorageMethods()
+                        .uploadImageToStorage('ProductPics', _image!, true);
+                    await FirebaseFirestore.instance
+                        .collection("products")
+                        .doc(uuid)
+                        .set({
+                      "productName": _controller.text,
+                      "productPrice": _price.text,
+                      "productCategory": _productCategory.text,
+                      "productSubCategory": _productSubCategory.text,
+                      "productImage": photoURL,
+                      "productImages": [],
+                      "rating": 5.0,
+                      "uuid": uuid,
+                    });
 
-                    print(rse);
                     setState(() {
                       _isLoading = false;
                     });
-                    if (rse == 'success') {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (builder) => MainDashboard()));
-                    } else {
-                      showSnakBar(rse, context);
-                    }
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (builder) => ImagesScreens(
+                                  uuid: uuid,
+                                )));
                   },
                   child: _isLoading == true
                       ? const Center(
                           child: CircularProgressIndicator.adaptive(),
                         )
-                      : Text("Create"),
+                      : Text(
+                          "Create",
+                          style: TextStyle(color: Colors.white),
+                        ),
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffFFBF00),
-                      fixedSize: Size(250, 50)),
+                      backgroundColor: Colors.blue, fixedSize: Size(250, 50)),
                 ),
               ),
             )
@@ -284,13 +267,6 @@ class _AddProductState extends State<AddProduct> {
     Uint8List ui = await pickImage(ImageSource.gallery);
     setState(() {
       _image = ui;
-    });
-  }
-
-  choosesImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _images.add(File(pickedFile!.path));
     });
   }
 }
