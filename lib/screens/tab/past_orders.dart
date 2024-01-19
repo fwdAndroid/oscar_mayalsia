@@ -22,8 +22,6 @@ class _PastOrdersState extends State<PastOrders> {
             ? StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('orders')
-                    .where('uid',
-                        isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                     .where("orderstatus", isEqualTo: "completed")
                     .snapshots(),
                 builder: (context,

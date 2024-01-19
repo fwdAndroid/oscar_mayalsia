@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/basic.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:oscar_mayalsia/screens/tab/current_order_detail.dart';
 
 class CurrentOrders extends StatefulWidget {
   const CurrentOrders({super.key});
@@ -22,8 +23,6 @@ class _CurrentOrdersState extends State<CurrentOrders> {
             ? StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('orders')
-                    .where('storeid',
-                        isEqualTo: FirebaseAuth.instance.currentUser!.uid)
                     .where("orderstatus", isEqualTo: "initialized")
                     .snapshots(),
                 builder: (context,
@@ -56,78 +55,59 @@ class _CurrentOrdersState extends State<CurrentOrders> {
                                 return Column(
                                   children: [
                                     ListTile(
-                                        onTap: () {
-                                          // Navigator.push(
-                                          //   context,
-                                          //   MaterialPageRoute(
-                                          //     builder: (builder) =>
-                                          //         CurrentOrderDetail(
-                                          //       image: documentSnapshot[
-                                          //               'productImage']
-                                          //           .toString(),
-                                          //       prductPrice: documentSnapshot[
-                                          //           'productPrice'],
-                                          //       productDescription:
-                                          //           documentSnapshot[
-                                          //               'productDescription'],
-                                          //       productName: documentSnapshot[
-                                          //           'productName'],
-                                          //       productUUid: documentSnapshot[
-                                          //           'productId'],
-                                          //       storeAddress: documentSnapshot[
-                                          //           'storeaddress'],
-                                          //       storeName: documentSnapshot[
-                                          //           'storeName'],
-                                          //       storeid:
-                                          //           documentSnapshot['storeid'],
-                                          //       productQuantity:
-                                          //           documentSnapshot[
-                                          //               'productQuantity'],
-                                          //     ),
-                                          //   ),
-                                          // );
-                                        },
-                                        leading: CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              documentSnapshot['productImage']
-                                                  .toString()),
-                                        ),
-                                        title: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text("Product Name"),
-                                            Text(documentSnapshot[
-                                                'productName']),
-                                          ],
-                                        ),
-                                        subtitle: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text("Product Description"),
-                                            Text(documentSnapshot[
-                                                'productDescription']),
-                                          ],
-                                        ),
-                                        trailing: TextButton(
-                                          onPressed: () async {
-                                            FirebaseFirestore.instance
-                                                .collection("orders")
-                                                .doc(documentSnapshot.id)
-                                                .update({"chat": 'yes'});
-                                            // Navigator.push(
-                                            //     context,
-                                            //     MaterialPageRoute(
-                                            //         builder: (builder) =>
-                                            //             ChatPage(
-                                            //               storeid:
-                                            //                   documentSnapshot[
-                                            //                       'storeid'],
-                                            //             )));
-                                          },
-                                          child: Text("Chat"),
-                                        )),
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (builder) =>
+                                                CurrentOrderDetail(
+                                              image: documentSnapshot[
+                                                      'productImage']
+                                                  .toString(),
+                                              prductPrice: documentSnapshot[
+                                                  'productPrice'],
+                                              productDescription:
+                                                  documentSnapshot[
+                                                      'productDescription'],
+                                              productName: documentSnapshot[
+                                                  'productName'],
+                                              productUUid:
+                                                  documentSnapshot['productId'],
+                                              storeAddress: documentSnapshot[
+                                                  'storeaddress'],
+                                              storeName:
+                                                  documentSnapshot['storeName'],
+                                              storeid:
+                                                  documentSnapshot['storeid'],
+                                              productQuantity: documentSnapshot[
+                                                  'productQuantity'],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      leading: CircleAvatar(
+                                        backgroundImage: NetworkImage(
+                                            documentSnapshot['productImage']
+                                                .toString()),
+                                      ),
+                                      title: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Product Name"),
+                                          Text(documentSnapshot['productName']),
+                                        ],
+                                      ),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text("Product Description"),
+                                          Text(documentSnapshot[
+                                              'productDescription']),
+                                        ],
+                                      ),
+                                    ),
                                     Divider()
                                   ],
                                 );

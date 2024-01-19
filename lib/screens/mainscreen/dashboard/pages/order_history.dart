@@ -49,7 +49,7 @@ class _OrderHistoryState extends State<OrderHistory>
             ),
           ],
           labelColor: Colors.black,
-          dividerColor: Colors.yellow,
+          dividerColor: Colors.blue,
           indicatorColor: Colors.black,
         ),
       ),
